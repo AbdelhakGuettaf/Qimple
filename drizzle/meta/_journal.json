@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1720108373567,
+      "tag": "0000_flippant_timeslip",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1720121252561,
+      "tag": "0001_damp_vindicator",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1720523227951,
+      "tag": "0002_remarkable_kid_colt",
+      "breakpoints": true
+    }
+  ]
+}
