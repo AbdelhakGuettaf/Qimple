@@ -111,7 +111,12 @@ const start = async () => {
 
       const order = await db
         .insert(schema.orders)
-        .values({ comment, createdBy: userId, ticket: orderCount[0].count + 1 })
+        .values({
+          comment,
+          createdBy: userId,
+          ticket: orderCount[0].count + 1,
+          clientName: trackings[0]?.name,
+        })
         .returning();
 
       orderId = order[0].id;
@@ -145,8 +150,15 @@ const start = async () => {
 
   wsapp.app.ws("/socket", (ws, req) => {
     ws.on("message", (msg) => {
+      if (msg.toString().startsWith("a_id")) {
+        //
+        console.log("yoooo");
+        ws.send(JSON.stringify({ action: "a_id", data: "thisyoid" }));
+        return;
+      }
       ws.send(`echo: ${msg}`);
     });
+
     ws.send("connected");
   });
 

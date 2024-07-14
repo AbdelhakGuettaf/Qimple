@@ -27,6 +27,7 @@ export const orders = pgTable("orders", {
   comment: text("comment"),
   ticket: integer("ticket"),
   cost: integer("cost"),
+  clientName: text("client_name"),
   createdAt: timestamp("created_at").defaultNow(),
   createdBy: text("created_bv").notNull(),
   updatedAt: timestamp("updated_at")

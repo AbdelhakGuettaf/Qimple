@@ -1,0 +1,1 @@
+ALTER TABLE "orders" ADD COLUMN "client_name" text;
