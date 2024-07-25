@@ -1,0 +1,1 @@
+ALTER TABLE "order_parcel" ADD COLUMN "price" integer;
