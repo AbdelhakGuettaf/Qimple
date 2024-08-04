@@ -1,4 +1,4 @@
-import { port } from "./lib/config"
+import { port, rhApi } from "./lib/config"
 
 import { drizzle } from "drizzle-orm/postgres-js"
 import {} from "postgres"
@@ -20,6 +20,9 @@ import { formatISO, startOfDay, endOfDay } from "date-fns"
 import { Mode } from "./lib/types"
 
 import { WebSocket } from "ws"
+
+import router from "./routes"
+import { FetchEmployees } from "./lib/utils"
 
 process.on("uncaughtException", function (err) {
   console.log(err)
@@ -153,6 +156,31 @@ const start = async () => {
     NotifyUserList(id)
   }
 
+  app.get("/updateEmployees", async (req, res) => {
+    if (!req.query.agency) {
+      res.status(400).send("Missing agency")
+      return
+    }
+
+    try {
+      const { status, data } = await rhApi.get(
+        `/agencyEmployees?agency=${req.query.agency}`
+      )
+
+      if (status !== 200) {
+        res.status(500).send(`RH API Request Error, Statu: ${status}`)
+        return
+      }
+
+      res.status(200).json(data.data)
+      return
+    } catch (e) {
+      console.log(e)
+      res.status(500).send(e)
+      return
+    }
+  })
+
   app.post("/createOrder", async (req, res) => {
     const { comment, trackings, userId, agencyName } = req.body as {
       trackings: {
@@ -182,14 +210,6 @@ const start = async () => {
     let orderId: number | null = null
 
     try {
-      const orderCount = await db
-        .select({ count: count() })
-        .from(schema.orders)
-        .where(
-          sql`"created_at" >= ${startOfToday} AND "created_at" <= ${endOfToday}`
-        )
-        .execute()
-
       const agency = await db
         .select()
         .from(schema.agencies)
@@ -200,6 +220,14 @@ const start = async () => {
         res.status(400).json({ success: false, message: "Agency not found" })
         return
       }
+
+      const orderCount = await db
+        .select({ count: count() })
+        .from(schema.orders)
+        .where(
+          sql`"created_at" >= ${startOfToday} AND "created_at" <= ${endOfToday} AND "agencyId" = ${agency[0].id}`
+        )
+        .execute()
 
       const order = await db
         .insert(schema.orders)
@@ -368,6 +396,8 @@ const start = async () => {
       ws.send(`echo: ${msg}`)
     })
   })
+
+  app.get("/updateEmployees", async (req, res) => {})
 
   app.listen(port)
   console.info(`Listening on port ${port}`)

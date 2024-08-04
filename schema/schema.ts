@@ -7,6 +7,7 @@ import {
   integer,
   timestamp,
   index,
+  boolean,
 } from "drizzle-orm/pg-core"
 
 export const users = pgTable("users", {
@@ -36,8 +37,8 @@ export const agencies = pgTable(
       .$onUpdate(() => new Date()),
   },
   (table) => ({
-    nameidx: index("name_idx").on(table.name),
-    networkidx: index("network_idx").on(table.network),
+    nameIdx: index("name_idx").on(table.name),
+    networkIdx: index("network_idx").on(table.network),
   })
 )
 
@@ -58,10 +59,10 @@ export const orders = pgTable(
       .$onUpdate(() => new Date()),
   },
   (table) => ({
-    ticketidx: index("ticket_idx").on(table.ticket),
-    createdatidx: index("created_at_idx").on(table.createdAt),
-    agencyididx: index("agency_id_idx").on(table.agencyId),
-    statusidx: index("status_idx").on(table.status),
+    ticketIdx: index("ticket_idx").on(table.ticket),
+    createdAtIdx: index("created_at_idx").on(table.createdAt),
+    agencyIdIdx: index("agency_id_idx").on(table.agencyId),
+    orderStatusIdx: index("order_status_idx").on(table.status),
   })
 )
 
@@ -80,6 +81,7 @@ export const orderParcel = pgTable(
     id: serial("id").primaryKey(),
     orderId: integer("order_id").references(() => orders.id),
     tracking: text("tracking").notNull(),
+    status: text("status").default("Attente"),
     packages: text("packages"),
     comment: text("comment"),
     client: text("client"),
@@ -94,8 +96,26 @@ export const orderParcel = pgTable(
       .$onUpdate(() => new Date()),
   },
   (table) => ({
-    orderididx: index("order_id_idx").on(table.orderId),
-    tracking: index("tracking_idx").on(table.tracking),
+    orderIdIdx: index("order_id_idx").on(table.orderId),
+    trackingIdx: index("tracking_idx").on(table.tracking),
+    statusIdx: index("status_idx").on(table.status),
+  })
+)
+
+export const employees = pgTable(
+  "employees",
+  {
+    id: serial("id").primaryKey(),
+    rhId: text("rh_id").notNull(),
+    name: text("name").notNull(),
+    active: boolean("active").default(true),
+    agencyId: integer("agency_id").references(() => agencies.id),
+  },
+  (table) => ({
+    rhIdx: index("rh_id_idx").on(table.rhId),
+    agencyIdIdx: index("agency_id_idx").on(table.agencyId),
+    nameIdx: index("name_idx").on(table.name),
+    activeIdx: index("active").on(table.active),
   })
 )
 

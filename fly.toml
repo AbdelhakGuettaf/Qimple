@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for qimple-wandering-glade-3746 on 2024-07-25T11:36:03+02:00
+# fly.toml app configuration file generated for qimple-summer-leaf-4821 on 2024-07-25T11:52:22+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'qimple-wandering-glade-3746'
+app = 'qimple-summer-leaf-4821'
 primary_region = 'cdg'
 
 [build]
