@@ -9,7 +9,7 @@
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "declaration": true
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts", "node_modules"]

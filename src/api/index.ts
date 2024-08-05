@@ -35,7 +35,12 @@ const connectionString = process.env.DATABASE_URL
 const orgConnectionString = process.env.ORG_URL
 
 // Disable prefetch as it is not supported for "Transaction" pool mode
-const client = postgres(connectionString)
+const client = postgres(connectionString, {
+  debug: true,
+  onnotice(notice) {
+    console.log(notice.message)
+  },
+})
 
 const orgClient = postgres(orgConnectionString, { debug: true })
 
