@@ -35,14 +35,9 @@ const connectionString = process.env.DATABASE_URL
 const orgConnectionString = process.env.ORG_URL
 
 // Disable prefetch as it is not supported for "Transaction" pool mode
-const client = postgres(connectionString, {
-  debug: true,
-  onnotice(notice) {
-    console.log(notice.message)
-  },
-})
+const client = postgres(connectionString)
 
-const orgClient = postgres(orgConnectionString, { debug: true })
+const orgClient = postgres(orgConnectionString)
 
 const db = drizzle(client, { schema: schema })
 
@@ -326,6 +321,8 @@ const start = async () => {
       if (msg.toString().startsWith("a_id")) {
         const id = msg.toString().split("#")[1]
 
+        console.log("Identification attempt", msg)
+
         if (!id) {
           ws.send(
             JSON.stringify({
@@ -339,66 +336,65 @@ const start = async () => {
           return
         }
 
-        const agency = await db
-          .select()
-          .from(schema.agencies)
-          .where(eq(schema.agencies.network, id))
+        try {
+          const agency = await db
+            .select()
+            .from(schema.agencies)
+            .where(eq(schema.agencies.network, id))
 
-        if (agency.length) {
-          const a_id = agency[0].id
+          if (agency.length) {
+            const a_id = agency[0].id
 
-          joinRoom(a_id.toString(), uuid, ws)
+            joinRoom(a_id.toString(), uuid, ws)
 
-          ws.send(
-            JSON.stringify({
-              action: "a_id",
-              data: a_id,
-              success: true,
-            })
-          )
-
-          // const uuid = crypto.randomUUID();
-
-          // try {
-          //   await db
-          //     .update(schema.users)
-          //     .set({ uuid: uuid, uui_exp: new Date(Date.now() + 86400000) }).where(schema.users)
-          // } catch (e) {
-          //   console.log(e);
-          //   ws.send(
-          //     JSON.stringify({
-          //       action: "a_id",
-          //       data: null,
-          //       success: false,
-          //       error: "Internal server error",
-          //     })
-          //   );
-          //   return;
-          // }
-
+            ws.send(
+              JSON.stringify({
+                action: "a_id",
+                data: a_id,
+                success: true,
+              })
+            )
+          }
+        } catch (e) {
+          console.log(e)
           ws.send(
             JSON.stringify({
               action: "a_id",
               data: null,
               success: false,
-              message: "Cannot join room",
+              error: "Internal server error",
             })
           )
-
-          return
         }
+        // const uuid = crypto.randomUUID();
+
+        // try {
+        //   await db
+        //     .update(schema.users)
+        //     .set({ uuid: uuid, uui_exp: new Date(Date.now() + 86400000) }).where(schema.users)
+        // } catch (e) {
+        //   console.log(e);
+        //   ws.send(
+        //     JSON.stringify({
+        //       action: "a_id",
+        //       data: null,
+        //       success: false,
+        //       error: "Internal server error",
+        //     })
+        //   );
+        //   return;
+        // }
 
         ws.send(
           JSON.stringify({
             action: "a_id",
             data: null,
             success: false,
-            message: "Code invalid",
+            message: "Code invalid or no agency",
           })
         )
         return
       }
-      ws.send(`echo: ${msg}`)
     })
   })
 
