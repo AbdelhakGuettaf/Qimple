@@ -288,13 +288,7 @@ const start = async () => {
   })
 
   wsapp.app.ws("/socket", (ws, req) => {
-    console.log("$$$$$$$$$$$$$$$")
-
-    console.log("new")
-
     const uuid = crypto.randomUUID()
-
-    console.log("new uui", crypto)
 
     console.log("new", uuid)
 
@@ -324,8 +318,6 @@ const start = async () => {
       if (msg.toString().startsWith("a_id")) {
         const id = msg.toString().split("#")[1]
 
-        console.log("Identification attemp", msg)
-
         if (!id) {
           ws.send(
             JSON.stringify({
@@ -348,7 +340,7 @@ const start = async () => {
           if (agency.length) {
             const a_id = agency[0].id
 
-            joinRoom(a_id.toString(), uuid, ws)
+            joinRoom(a_id.toString(), uuid, ws, mode)
 
             ws.send(
               JSON.stringify({
