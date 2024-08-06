@@ -224,7 +224,7 @@ const start = async () => {
         .select({ count: count() })
         .from(schema.orders)
         .where(
-          sql`"created_at" >= ${startOfToday} AND "created_at" <= ${endOfToday} AND "agencyId" = ${agency[0].id}`
+          sql`"created_at" >= ${startOfToday} AND "created_at" <= ${endOfToday} AND "agency_id" = ${agency[0].id}`
         )
         .execute()
 
