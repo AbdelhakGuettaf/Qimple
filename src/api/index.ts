@@ -308,6 +308,8 @@ const start = async () => {
     }
 
     ws.on("message", async (msg) => {
+      console.log(msg.toString())
+
       if (msg.toString().startsWith("leave")) {
         const room = msg.toString().split("#")[1]
 
