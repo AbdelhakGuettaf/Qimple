@@ -308,8 +308,6 @@ const start = async () => {
     }
 
     ws.on("message", async (msg) => {
-      console.log(msg.toString())
-
       if (msg.toString().startsWith("leave")) {
         const room = msg.toString().split("#")[1]
 
@@ -323,7 +321,7 @@ const start = async () => {
       if (msg.toString().startsWith("a_id")) {
         const id = msg.toString().split("#")[1]
 
-        console.log("Identification attempt", msg)
+        console.log("Identification attemp", msg)
 
         if (!id) {
           ws.send(
@@ -397,6 +395,8 @@ const start = async () => {
         )
         return
       }
+
+      ws.send(`echo: ${msg}`)
     })
   })
 
