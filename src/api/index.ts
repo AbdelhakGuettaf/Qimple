@@ -21,8 +21,7 @@ import { Mode } from "./lib/types"
 
 import { WebSocket } from "ws"
 
-import router from "./routes"
-import { FetchEmployees } from "./lib/utils"
+import * as crypto from "crypto"
 
 process.on("uncaughtException", function (err) {
   console.log(err)
