@@ -291,7 +291,11 @@ const start = async () => {
   wsapp.app.ws("/socket", (ws, req) => {
     console.log("$$$$$$$$$$$$$$$")
 
+    console.log("new")
+
     const uuid = crypto.randomUUID()
+
+    console.log("new uui", crypto)
 
     console.log("new", uuid)
 
