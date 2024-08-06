@@ -86,7 +86,12 @@ const start = async () => {
     res.status(200).send("OK")
   })
 
-  const joinRoom = (id: string, uuid: string, ws: WebSocket, mode?: Mode) => {
+  const joinRoom = (
+    id: string,
+    uuid: string,
+    ws: WebSocket,
+    mode: Mode = "depot"
+  ) => {
     console.log(id, uuid, mode, "joined")
     if (!rooms.has(id)) {
       rooms.set(id, new Map())
@@ -102,7 +107,7 @@ const start = async () => {
    */
   function NotifyUserList(id: string) {
     rooms.get(id)?.forEach((s, mkey) => {
-      if (s.mode) {
+      if (s.mode !== "depot") {
         return
       }
 
