@@ -12,7 +12,7 @@ import express = require("express")
 
 // import session = require("express-session");
 
-import { count, eq, sql } from "drizzle-orm"
+import { count, eq, sql, inArray, and, gte, lte } from "drizzle-orm"
 
 import * as env from "dotenv"
 
@@ -81,7 +81,6 @@ const start = async () => {
     )
     next()
   })
-
   app.get("/status", (req, res) => {
     res.status(200).send("OK")
   })
@@ -225,6 +224,27 @@ const start = async () => {
         return
       }
 
+      const dup = await db
+        .select()
+        .from(schema.orderParcel)
+        .where(
+          and(
+            inArray(
+              schema.orderParcel.tracking,
+              trackings.map((t) => t.tracking)
+            ),
+            gte(schema.orderParcel.createdAt, startOfDay(new Date())),
+            lte(schema.orderParcel.createdAt, endOfDay(new Date()))
+          )
+        )
+
+      if (dup.length > 0) {
+        res
+          .status(422)
+          .json({ success: false, message: "Ce code est déjà demandé" })
+        return
+      }
+
       const orderCount = await db
         .select({ count: count() })
         .from(schema.orders)
@@ -274,7 +294,7 @@ const start = async () => {
         })
       }
     } catch (e) {
-      console.log("line 91 \n", e)
+      console.log("line 297 \n", e)
 
       res.status(500).json({ success: false, message: "Internal server error" })
 

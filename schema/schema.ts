@@ -9,6 +9,7 @@ import {
   index,
   boolean,
 } from "drizzle-orm/pg-core"
+import e = require("express")
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -51,6 +52,7 @@ export const orders = pgTable(
     ticket: integer("ticket"),
     cost: integer("cost"),
     agencyId: integer("agency_id").references(() => agencies.id),
+    employeeId: integer("employee_id").references(() => employees.id),
     clientName: text("client_name"),
     createdAt: timestamp("created_at").defaultNow(),
     createdBy: text("created_bv").notNull(),
@@ -82,6 +84,7 @@ export const orderParcel = pgTable(
     orderId: integer("order_id").references(() => orders.id),
     tracking: text("tracking").notNull(),
     status: text("status").default("Attente"),
+    zoneName: text("zone_name"),
     packages: text("packages"),
     comment: text("comment"),
     client: text("client"),
@@ -113,11 +116,16 @@ export const employees = pgTable(
   },
   (table) => ({
     rhIdx: index("rh_id_idx").on(table.rhId),
-    agencyIdIdx: index("agency_id_idx").on(table.agencyId),
-    nameIdx: index("name_idx").on(table.name),
+    agencyIdIdx: index("employee_agency_id_idx").on(table.agencyId),
+    nameIdx: index("employee_name_idx").on(table.name),
     activeIdx: index("active").on(table.active),
   })
 )
+
+export const employeeRealations = relations(employees, ({ one, many }) => ({
+  agency: one(agencies),
+  orders: many(orders),
+}))
 
 export const parcelOrderRelations = relations(orders, ({ many }) => ({
   parcels: many(orderParcel),

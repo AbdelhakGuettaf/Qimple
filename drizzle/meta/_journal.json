@@ -127,6 +127,20 @@
       "when": 1722764500755,
       "tag": "0017_premium_captain_britain",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1722961418681,
+      "tag": "0018_quiet_sir_ram",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1723730169631,
+      "tag": "0019_ordinary_shinko_yamashiro",
+      "breakpoints": true
     }
   ]
 }
