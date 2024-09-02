@@ -194,6 +194,7 @@ const start = async () => {
         pos?: string
         cr?: string
         origin?: string
+        type?: string
       }[]
       comment: string | undefined | null
       userId: string

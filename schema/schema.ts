@@ -88,6 +88,7 @@ export const orderParcel = pgTable(
     packages: text("packages"),
     comment: text("comment"),
     client: text("client"),
+    type: text("type"),
     pos: text("pos"),
     zone: text("zone"),
     cr: text("cr"),

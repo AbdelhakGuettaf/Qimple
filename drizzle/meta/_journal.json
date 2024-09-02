@@ -141,6 +141,13 @@
       "when": 1723730169631,
       "tag": "0019_ordinary_shinko_yamashiro",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1725274074239,
+      "tag": "0020_ambitious_stardust",
+      "breakpoints": true
     }
   ]
 }
