@@ -262,6 +262,7 @@ const start = async () => {
           ticket: orderCount[0].count + 1,
           clientName: trackings[0]?.name,
           agencyId: agency[0].id,
+          dateString: new Date().toISOString().split("T")[0],
         })
         .returning()
 

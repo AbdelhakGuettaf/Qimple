@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm"
+import { relations, sql } from "drizzle-orm"
 import {
   pgTable,
   serial,
@@ -8,8 +8,9 @@ import {
   timestamp,
   index,
   boolean,
+  unique,
+  date,
 } from "drizzle-orm/pg-core"
-import e = require("express")
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -48,13 +49,16 @@ export const orders = pgTable(
   {
     id: serial("id").primaryKey(),
     status: text("status").default("Attente"),
+    cancelled: boolean("cancelled").default(false),
     comment: text("comment"),
     ticket: integer("ticket"),
     cost: integer("cost"),
     agencyId: integer("agency_id").references(() => agencies.id),
     employeeId: integer("employee_id").references(() => employees.id),
+    timeToFind: integer("time_to_find"),
     clientName: text("client_name"),
     createdAt: timestamp("created_at").defaultNow(),
+    dateString: date("dateString", { mode: "string" }),
     createdBy: text("created_bv").notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -65,6 +69,11 @@ export const orders = pgTable(
     createdAtIdx: index("created_at_idx").on(table.createdAt),
     agencyIdIdx: index("agency_id_idx").on(table.agencyId),
     orderStatusIdx: index("order_status_idx").on(table.status),
+    uniqueTicketPerDayPerAgency: unique("uniqueTicketPerDay").on(
+      table.ticket,
+      table.agencyId,
+      table.dateString
+    ),
   })
 )
 
